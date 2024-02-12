@@ -26,6 +26,8 @@ export function API({ stack }: StackContext) {
     },
     routes: {
       "GET /": "packages/functions/src/get-entries/function.handler",
+      "GET /podcast-feed":
+        "packages/functions/src/podcast-feed/function.handler",
       "POST /": "packages/functions/src/add-entry/function.handler",
     },
   });
