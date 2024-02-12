@@ -5,10 +5,13 @@ import {
   Table,
   Script,
   Bucket,
+  ApiDomainProps,
 } from "sst/constructs";
 import * as s3 from "aws-cdk-lib/aws-s3";
+import { DomainName } from "aws-cdk-lib/aws-apigatewayv2";
+import { StringParameter } from "aws-cdk-lib/aws-ssm";
 
-export function API({ stack }: StackContext) {
+export function API({ stack, app }: StackContext) {
   const table = new Table(stack, "Table", {
     fields: {
       id: "number",
@@ -17,6 +20,29 @@ export function API({ stack }: StackContext) {
       partitionKey: "id",
     },
   });
+
+  let customDomain: ApiDomainProps | undefined;
+  if (!app.local && app.stage !== "local") {
+    customDomain = {
+      path: "a-list",
+      cdk: {
+        domainName: DomainName.fromDomainNameAttributes(stack, "ApiDomain", {
+          name: StringParameter.valueFromLookup(
+            stack,
+            `/sst-outputs/${app.stage}-infra-API/domainName`
+          ),
+          regionalDomainName: StringParameter.valueFromLookup(
+            stack,
+            `/sst-outputs/${app.stage}-infra-API/regionalDomainName`
+          ),
+          regionalHostedZoneId: StringParameter.valueFromLookup(
+            stack,
+            `/sst-outputs/${app.stage}-infra-API/regionalHostedZoneId`
+          ),
+        }),
+      },
+    };
+  }
 
   const api = new Api(stack, "api", {
     defaults: {
@@ -30,6 +56,7 @@ export function API({ stack }: StackContext) {
         "packages/functions/src/podcast-feed/function.handler",
       "POST /": "packages/functions/src/add-entry/function.handler",
     },
+    customDomain,
   });
 
   const assetsBucket = new Bucket(stack, "MWAssetsBucket", {

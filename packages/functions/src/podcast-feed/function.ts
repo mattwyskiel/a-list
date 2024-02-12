@@ -10,7 +10,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const podcast = new Podcast({
     title: "The A-List Setlist",
     description: "DJ Mixes from A-List",
-    feedUrl: Api.api.url + "/podcast-feed",
+    feedUrl: "https://api.mattwyskiel.com/a-list/podcast-feed",
     siteUrl: "https://mattwyskiel.com",
     author: "A-List",
   });
