@@ -30,11 +30,11 @@ export function API({ stack }: StackContext) {
     },
   });
 
-  const assetsBucket = new Bucket(stack, "AssetsBucket", {
+  const assetsBucket = new Bucket(stack, "MWAssetsBucket", {
     cdk: {
       bucket: s3.Bucket.fromBucketName(
         stack,
-        "AssetsBucket",
+        "MWAssetsBucketCDK",
         "com.mattwyskiel.assets"
       ),
     },
