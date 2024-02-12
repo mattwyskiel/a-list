@@ -24,6 +24,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       enclosure: {
         url: entry.audioUrl,
       },
+      itunesExplicit: true,
     });
   }
 
