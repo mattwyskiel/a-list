@@ -1,6 +1,6 @@
 import { DatabaseService } from "@a-list/core";
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
-import { Podcast } from "podcast";
+import { Podcast, ItunesExplicit } from "podcast";
 import { Api } from "sst/node/api";
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
@@ -12,7 +12,9 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     description: "DJ Mixes from A-List",
     feedUrl: "https://api.mattwyskiel.com/a-list/podcast-feed",
     siteUrl: "https://mattwyskiel.com",
+    imageUrl: "https://assets.mattwyskiel.com/a-list/podcast-image.jpeg",
     author: "A-List",
+    itunesExplicit: "yes",
   });
 
   for (const entry of entries) {
@@ -24,7 +26,8 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       enclosure: {
         url: entry.audioUrl,
       },
-      itunesExplicit: true,
+      itunesExplicit: "yes",
+      imageUrl: "https://assets.mattwyskiel.com/a-list/podcast-image.jpeg",
     });
   }
 
