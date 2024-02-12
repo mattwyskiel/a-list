@@ -1,0 +1,31 @@
+on:
+  push:
+    branches:
+      - "main"
+
+name: Deploy
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Publishes this SST stack
+    steps:
+      - uses: actions/checkout@v3
+      - id: pnpm-install
+        uses: mattwyskiel/sst-node-pnpm-setup@v3
+      - run: pnpm i
+        shell: bash
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::662292074719:role/whiskey-app-role
+          role-session-name: sst-pnpm-workflows-sample
+      - run: pnpm sst deploy --stage prod --outputs-file outputs.json
+      - uses: mattwyskiel/sst-outputs-to-ssm@main
+        with:
+          outputs_path: .sst/outputs.json

@@ -1,0 +1,19 @@
+{
+  "name": "@a-list/core",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "sst bind vitest",
+    "typecheck": "tsc -noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^20.6.0",
+    "sst": "2.40.3",
+    "vitest": "^0.34.4"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.410.0",
+    "@aws-sdk/lib-dynamodb": "^3.410.0",
+    "zod": "^3.22.2"
+  }
+}
