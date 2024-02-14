@@ -81,7 +81,7 @@ export function Player() {
   );
 }
 
-function ChevronLeftIcon(props) {
+function ChevronLeftIcon(props: any) {
   return (
     <svg
       {...props}
@@ -100,7 +100,7 @@ function ChevronLeftIcon(props) {
   );
 }
 
-function ChevronRightIcon(props) {
+function ChevronRightIcon(props: any) {
   return (
     <svg
       {...props}
@@ -119,7 +119,7 @@ function ChevronRightIcon(props) {
   );
 }
 
-function ShuffleIcon(props) {
+function ShuffleIcon(props: any) {
   return (
     <svg
       {...props}
@@ -142,7 +142,7 @@ function ShuffleIcon(props) {
   );
 }
 
-function StepBackIcon(props) {
+function StepBackIcon(props: any) {
   return (
     <svg
       {...props}
@@ -162,7 +162,7 @@ function StepBackIcon(props) {
   );
 }
 
-function PlayIcon(props) {
+function PlayIcon(props: any) {
   return (
     <svg
       {...props}
@@ -181,7 +181,7 @@ function PlayIcon(props) {
   );
 }
 
-function StepForwardIcon(props) {
+function StepForwardIcon(props: any) {
   return (
     <svg
       {...props}
@@ -201,7 +201,7 @@ function StepForwardIcon(props) {
   );
 }
 
-function RepeatIcon(props) {
+function RepeatIcon(props: any) {
   return (
     <svg
       {...props}
