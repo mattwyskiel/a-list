@@ -31,9 +31,9 @@ export function Player(props: PlayerProps) {
         <Image
           alt="Album cover"
           className="rounded-lg object-cover"
-          height={200}
+          height={250}
           src="https://assets.mattwyskiel.com/a-list/podcast-image.jpeg"
-          width={200}
+          width={250}
         />
         <div className="grid gap-2 text-center w-full">
           <p className="font-semibold">Playing now</p>
