@@ -26,9 +26,12 @@ export type PlayerProps = {
 
 export function Player(props: PlayerProps) {
   return (
-    <Card>
+    <>
       <CardHeader className="pb-0">
         <div className="flex items-center gap-4">
+          {/* <Button size="icon" variant="ghost">
+            <ChevronLeftIcon className="w-5 h-5" />
+          </Button> */}
           <div className="grid gap-1.5">
             <h2 className="text-lg font-bold leading-none">
               {props.mix.title}
@@ -37,12 +40,6 @@ export function Player(props: PlayerProps) {
               The A-List Setlist
             </p>
           </div>
-          {/* <Button className="ml-auto" size="icon" variant="ghost">
-            <ChevronLeftIcon className="w-5 h-5" />
-          </Button>
-          <Button size="icon" variant="ghost">
-            <ChevronRightIcon className="w-5 h-5" />
-          </Button> */}
         </div>
       </CardHeader>
       <CardContent className="flex flex-col items-center gap-4 p-6">
@@ -67,6 +64,8 @@ export function Player(props: PlayerProps) {
             backgroundColor: "transparent",
             color: "rgb(var(--foreground-rgb))",
           }}
+          customAdditionalControls={[]}
+          customVolumeControls={[]}
           // other props here
         />
         {/* <div className="grid gap-1 w-full">
@@ -103,7 +102,7 @@ export function Player(props: PlayerProps) {
           </Button>
         </div>
       </CardFooter> */}
-    </Card>
+    </>
   );
 }
 
