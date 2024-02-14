@@ -24,6 +24,8 @@ async function getData(): Promise<Mix[]> {
 }
 
 export default async function Home() {
-  const mixes = await getData();
+  let mixes = await getData();
+  // sort mixes by publishDate in descending order
+  mixes.sort((a, b) => (a.publishDate > b.publishDate ? -1 : 1));
   return <MixList mixes={mixes} />;
 }
