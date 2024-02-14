@@ -6,6 +6,7 @@ import {
   Script,
   Bucket,
   ApiDomainProps,
+  NextjsSite,
 } from "sst/constructs";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import { DomainName } from "aws-cdk-lib/aws-apigatewayv2";
@@ -15,9 +16,13 @@ export function API({ stack, app }: StackContext) {
   const table = new Table(stack, "Table", {
     fields: {
       id: "number",
+      slug: "string",
     },
     primaryIndex: {
       partitionKey: "id",
+    },
+    globalIndexes: {
+      bySlug: { partitionKey: "slug" },
     },
   });
 
@@ -75,6 +80,17 @@ export function API({ stack, app }: StackContext) {
         bind: [table, assetsBucket],
       },
     },
+  });
+
+  const site = new NextjsSite(stack, "Site", {
+    path: "packages/web",
+    customDomain:
+      app.stage === "prod"
+        ? {
+            domainName: "a-list.mattwyskiel.com",
+            hostedZone: "mattwyskiel.com",
+          }
+        : undefined,
   });
 
   stack.addOutputs({
