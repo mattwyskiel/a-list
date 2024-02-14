@@ -1,6 +1,7 @@
 import { Player, PlayerProps } from "@/components/player";
 import { Button } from "@/components/ui/button";
 import { CardHeader } from "@/components/ui/card";
+import { Metadata, ResolvingMetadata } from "next";
 import Link from "next/link";
 
 type Mix = {
@@ -23,6 +24,34 @@ async function getData(slug: string): Promise<Mix> {
   }
 
   return res.json();
+}
+
+export async function generateMetadata(
+  { params }: { params: { slug: string } },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const mix = await getData(params.slug);
+
+  return {
+    title: `${mix.title} - The A-List Setlist`,
+    description: mix.description,
+    openGraph: {
+      type: "music.song",
+      title: mix.title,
+      musicians: ["DJ A-List"],
+      albums: ["The A-List Setlist"],
+      siteName: "The A-List Setlist",
+      url: `https://a-list.mattwyskiel.com/mixes/${params.slug}`,
+      images: [
+        {
+          url: "https://assets.mattwyskiel.com/a-list/podcast-image.jpeg",
+          width: 1024,
+          height: 1024,
+          alt: "The A-List Setlist - podcast cover image",
+        },
+      ],
+    },
+  };
 }
 
 export default async function Page({ params }: { params: { slug: string } }) {
