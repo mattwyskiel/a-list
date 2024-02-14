@@ -53,6 +53,14 @@ export function Player(props: PlayerProps) {
           customVolumeControls={[]}
           // other props here
         />
+        <div>
+          <p className="text-med font-bold text-gray-500 dark:text-gray-400">
+            Description
+          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {props.mix.description}
+          </p>
+        </div>
       </CardContent>
     </>
   );
