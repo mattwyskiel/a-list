@@ -1,6 +1,7 @@
 import { Player, PlayerProps } from "@/components/player";
 import { Button } from "@/components/ui/button";
 import { CardHeader } from "@/components/ui/card";
+import Link from "next/link";
 
 type Mix = {
   id: number;
@@ -30,9 +31,11 @@ export default async function Page({ params }: { params: { slug: string } }) {
     <>
       <CardHeader className="pb-0">
         <div className="flex items-center gap-4">
-          {/* <Button size="icon" variant="ghost">
-            <ChevronLeftIcon className="w-5 h-5" />
-          </Button> */}
+          <Button size="icon" variant="ghost">
+            <Link href="/">
+              <ChevronLeftIcon className="w-5 h-5" />
+            </Link>
+          </Button>
           <div className="grid gap-1.5">
             <h2 className="text-md font-bold leading-none">
               The A-List Setlist
