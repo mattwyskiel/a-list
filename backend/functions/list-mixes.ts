@@ -10,10 +10,16 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   for (const mix of allMixes) {
     const mixWithAssets = {
       ...mix,
-      assets: await dbClient
-        .select()
-        .from(audioAssets)
-        .where(eq(audioAssets.mixId, mix.id)),
+      assets: (
+        await dbClient
+          .select()
+          .from(audioAssets)
+          .where(eq(audioAssets.mixId, mix.id))
+      ).map((asset) => ({
+        key: asset.key,
+        mimeType: asset.mimeType,
+        durationSeconds: asset.durationSeconds,
+      })),
     };
     mixesWithAssets.push(mixWithAssets);
   }
