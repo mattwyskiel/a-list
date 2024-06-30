@@ -13,6 +13,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     name: Publishes this SST stack
+    defaults:
+      run:
+        working-directory: ./backend
     steps:
       - uses: actions/checkout@v3
       - id: pnpm-install
