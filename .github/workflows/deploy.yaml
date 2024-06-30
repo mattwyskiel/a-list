@@ -15,7 +15,7 @@ jobs:
     name: Publishes this SST stack
     defaults:
       run:
-        working-directory: ./backend
+        working-directory: ./old
     steps:
       - uses: actions/checkout@v3
       - id: pnpm-install

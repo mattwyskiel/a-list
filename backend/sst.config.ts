@@ -1,17 +1,17 @@
-import { SSTConfig } from "sst";
-import { API } from "./stacks/MyStack";
+/// <reference path="./.sst/platform/config.d.ts" />
 
-export default {
-  config(_input) {
+export default $config({
+  app(input) {
     return {
-      name: "a-list",
-      region: "us-east-1",
+      name: "a-list-backend",
+      removal: input?.stage === "production" ? "retain" : "remove",
+      home: "aws",
     };
   },
-  stacks(app) {
-    app.setDefaultFunctionProps({
-      runtime: "nodejs20.x",
-    });
-    app.stack(API);
+  async run() {
+    const bucket = new sst.aws.Bucket("Bucket");
+
+    const api = new sst.aws.ApiGatewayV2("Api");
+    api.route("GET /", "functions/list-mixes.handler");
   },
-} satisfies SSTConfig;
+});
