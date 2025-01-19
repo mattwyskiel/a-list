@@ -12,6 +12,7 @@ export default {
     app.setDefaultFunctionProps({
       runtime: "nodejs20.x",
     });
+    if (app.stage === "prod") app.setDefaultRemovalPolicy("retain");
     app.stack(API);
   },
 } satisfies SSTConfig;
