@@ -29,3 +29,6 @@ See a need, fill a need!
 - **File Hosting:** [Amazon S3](https://aws.amazon.com/s3/) (defined externally)
 - **Infrastructure:** [SST v2](https://v2.sst.dev/) (based on [AWS CDK](https://aws.amazon.com/cdk/))
 - **CI/CD:** [GitHub Actions](https://docs.github.com/en/actions)
+
+## Next Steps
+- [ ] Multiplatform support
