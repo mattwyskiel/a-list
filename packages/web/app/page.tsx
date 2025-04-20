@@ -9,6 +9,8 @@ type Mix = {
   slug: string;
 };
 
+export const revalidate = 60;
+
 async function getData(): Promise<Mix[]> {
   const res = await fetch("https://api.mattwyskiel.com/a-list/");
 
