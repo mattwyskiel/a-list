@@ -1,4 +1,4 @@
-import { Player, PlayerProps } from "@/components/player";
+import { Player } from "@/components/player";
 import { Button } from "@/components/ui/button";
 import { CardHeader } from "@/components/ui/card";
 import { Metadata, ResolvingMetadata } from "next";
