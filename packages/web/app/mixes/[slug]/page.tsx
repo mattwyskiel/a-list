@@ -46,10 +46,11 @@ async function getData(slug: string): Promise<Mix> {
 }
 
 export async function generateMetadata(
-  { params }: { params: { slug: string } },
+  { params }: { params: Promise<{ slug: string }> },
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const mix = await getData(params.slug);
+  const { slug } = await params;
+  const mix = await getData(slug);
 
   return {
     title: `${mix.title} - The A-List Setlist`,
@@ -60,7 +61,7 @@ export async function generateMetadata(
       musicians: ["DJ A-List"],
       albums: ["The A-List Setlist"],
       siteName: "The A-List Setlist",
-      url: `https://a-list.mattwyskiel.com/mixes/${params.slug}`,
+      url: `https://a-list.mattwyskiel.com/mixes/${slug}`,
       images: [
         {
           url: "https://assets.mattwyskiel.com/a-list/podcast-image.jpeg",
@@ -73,8 +74,9 @@ export async function generateMetadata(
   };
 }
 
-export default async function Page({ params }: { params: { slug: string } }) {
-  const mix = await getData(params.slug);
+export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const mix = await getData(slug);
   return (
     <>
       <CardHeader className="pb-0">
