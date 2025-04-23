@@ -7,7 +7,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     return {
       statusCode: 200,
       body: JSON.stringify(
-        await database.getEntryBySlug(event.queryStringParameters.slug)
+        await database.getEntryBySlug(event.queryStringParameters.slug),
       ),
     };
   }

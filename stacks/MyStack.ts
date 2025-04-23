@@ -34,15 +34,15 @@ export function API({ stack, app }: StackContext) {
         domainName: DomainName.fromDomainNameAttributes(stack, "ApiDomain", {
           name: StringParameter.valueFromLookup(
             stack,
-            `/sst-outputs/${app.stage}-infra-API/domainName`
+            `/sst-outputs/${app.stage}-infra-API/domainName`,
           ),
           regionalDomainName: StringParameter.valueFromLookup(
             stack,
-            `/sst-outputs/${app.stage}-infra-API/regionalDomainName`
+            `/sst-outputs/${app.stage}-infra-API/regionalDomainName`,
           ),
           regionalHostedZoneId: StringParameter.valueFromLookup(
             stack,
-            `/sst-outputs/${app.stage}-infra-API/regionalHostedZoneId`
+            `/sst-outputs/${app.stage}-infra-API/regionalHostedZoneId`,
           ),
         }),
       },
@@ -69,7 +69,7 @@ export function API({ stack, app }: StackContext) {
       bucket: s3.Bucket.fromBucketName(
         stack,
         "MWAssetsBucketCDK",
-        "com.mattwyskiel.assets"
+        "com.mattwyskiel.assets",
       ),
     },
   });

@@ -1,9 +1,8 @@
 import { DatabaseService } from "@a-list/core";
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
-import { Podcast, ItunesExplicit } from "podcast";
-import { Api } from "sst/node/api";
+import { Podcast } from "podcast";
 
-export const handler: APIGatewayProxyHandlerV2 = async (event) => {
+export const handler: APIGatewayProxyHandlerV2 = async (_event) => {
   const database = new DatabaseService();
   const entries = await database.retrieveAllEntries();
 
