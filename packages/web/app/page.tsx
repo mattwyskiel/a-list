@@ -7,6 +7,8 @@ type Mix = {
   audioUrl: string;
   publishDate: string;
   slug: string;
+  archive: boolean;
+  draft: boolean;
 };
 
 export const revalidate = 60;
@@ -22,12 +24,12 @@ async function getData(): Promise<Mix[]> {
     throw new Error("Failed to fetch data");
   }
 
-  return res.json();
+  const mixes: Mix[] = await res.json();
+
+  return mixes.sort((a, b) => (a.publishDate > b.publishDate ? -1 : 1)).filter((mix) => !mix.archive && !mix.draft);
 }
 
 export default async function Home() {
   let mixes = await getData();
-  // sort mixes by publishDate in descending order
-  mixes.sort((a, b) => (a.publishDate > b.publishDate ? -1 : 1));
   return <MixList mixes={mixes} />;
 }
