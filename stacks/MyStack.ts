@@ -1,16 +1,15 @@
-import {
-  StackContext,
-  Api,
-  EventBus,
-  Table,
-  Script,
-  Bucket,
-  ApiDomainProps,
-  NextjsSite,
-} from "sst/constructs";
-import * as s3 from "aws-cdk-lib/aws-s3";
 import { DomainName } from "aws-cdk-lib/aws-apigatewayv2";
+import * as s3 from "aws-cdk-lib/aws-s3";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
+import {
+  Api,
+  type ApiDomainProps,
+  Bucket,
+  NextjsSite,
+  Script,
+  type StackContext,
+  Table,
+} from "sst/constructs";
 
 export function API({ stack, app }: StackContext) {
   const table = new Table(stack, "Table", {
@@ -82,7 +81,7 @@ export function API({ stack, app }: StackContext) {
     },
   });
 
-  const site = new NextjsSite(stack, "Site", {
+  const _site = new NextjsSite(stack, "Site", {
     path: "packages/web",
     customDomain:
       app.stage === "prod"

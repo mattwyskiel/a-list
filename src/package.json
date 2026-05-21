@@ -1,0 +1,42 @@
+{
+  "name": "@a-list/webapp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "typecheck:watch": "tsc --noEmit --watch",
+    "build": "bunx open-next build",
+    "build:next": "next build",
+    "dev": "TABLE_NAME=${TABLE_NAME:-a-list-entries-dev} A_LIST_URL=${A_LIST_URL:-http://a-list.localhost:3003} NEXT_PUBLIC_STACK=${NEXT_PUBLIC_STACK:-dev} next dev -H a-list.localhost -p 3003",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@a-list/core": "workspace:*",
+    "@aws-sdk/client-dynamodb": "catalog:app",
+    "@aws-sdk/client-s3": "catalog:app",
+    "@aws-sdk/lib-dynamodb": "catalog:app",
+    "@next/third-parties": "catalog:ui",
+    "@radix-ui/react-icons": "catalog:ui",
+    "@radix-ui/react-slot": "catalog:ui",
+    "@whiskey/web-ui": "workspace:*",
+    "class-variance-authority": "catalog:ui",
+    "clsx": "catalog:ui",
+    "lucide-react": "catalog:ui",
+    "next": "catalog:app",
+    "podcast": "catalog:app",
+    "react": "catalog:app",
+    "react-dom": "catalog:app",
+    "react-h5-audio-player": "catalog:ui",
+    "tailwind-merge": "catalog:ui",
+    "tailwindcss-animate": "catalog:ui"
+  },
+  "devDependencies": {
+    "@types/bun": "catalog:",
+    "@types/react": "catalog:ui",
+    "@types/react-dom": "catalog:ui",
+    "autoprefixer": "catalog:ui",
+    "postcss": "catalog:ui",
+    "tailwindcss": "^3.4.18",
+    "typescript": "catalog:"
+  }
+}

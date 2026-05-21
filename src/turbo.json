@@ -1,0 +1,13 @@
+{
+  "$schema": "https://v2-9-14.turborepo.dev/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "outputs": [".open-next/**", "!.open-next/cache/**", "!.next/cache/**"],
+      "env": ["$TURBO_EXTENDS$"]
+    },
+    "typecheck": {
+      "outputs": ["tsconfig.tsbuildinfo", ".next/cache/.tsbuildinfo"]
+    }
+  }
+}

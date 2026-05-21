@@ -1,25 +1,25 @@
 {
   "name": "a-list",
-  "version": "0.0.0",
+  "main": "index.ts",
   "private": true,
-  "type": "module",
   "scripts": {
-    "dev": "sst dev",
-    "build": "sst build",
-    "deploy": "sst deploy",
-    "remove": "sst remove",
-    "console": "sst console",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "typecheck:watch": "tsc --noEmit --watch",
+    "dev": "cd src && bun run dev",
+    "deploy": "pulumi up --stack prod -y",
+    "deploy:dev": "pulumi up --stack dev -y",
+    "cancel-deploy": "pulumi cancel -s prod --yes",
+    "cancel-deploy:dev": "pulumi cancel -s dev --yes"
   },
   "devDependencies": {
-    "@tsconfig/node18": "^18.2.4",
-    "aws-cdk-lib": "2.124.0",
-    "constructs": "10.3.0",
-    "sst": "2.48.5",
-    "typescript": "^5.8.3"
+    "@types/bun": "catalog:dev"
   },
-  "workspaces": [
-    "packages/*"
-  ],
-  "packageManager": "pnpm@9.3.0+sha512.ee7b93e0c2bd11409c6424f92b866f31d3ea1bef5fbe47d3c7500cdc3c9668833d2e55681ad66df5b640c61fa9dc25d546efa54d76d7f8bf54b13614ac293631"
+  "peerDependencies": {
+    "typescript": "catalog:"
+  },
+  "dependencies": {
+    "@pulumi/aws": "catalog:infra",
+    "@pulumi/pulumi": "catalog:infra",
+    "@whiskey/pulumi-opennext-site": "workspace:*"
+  }
 }
