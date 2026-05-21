@@ -42,6 +42,7 @@ const domainName =
 const site = new NextJsSite(siteName, {
   path: "src",
   environment: {
+    A_LIST_URL: `https://${domainName}`,
     TABLE_NAME: table.name,
     NEXT_PUBLIC_STACK: stack,
   },
