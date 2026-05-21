@@ -1,0 +1,12 @@
+{
+  "$schema": "https://v2-9-14.turborepo.dev/schema.json",
+  "tasks": {
+    "deploy": {
+      "dependsOn": ["@a-list/webapp#build"]
+    },
+    "deploy:dev": {
+      "dependsOn": ["@a-list/webapp#build"]
+    }
+  },
+  "extends": ["//"]
+}
