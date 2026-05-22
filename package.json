@@ -20,6 +20,8 @@
   "dependencies": {
     "@pulumi/aws": "catalog:infra",
     "@pulumi/pulumi": "catalog:infra",
-    "@whiskey/pulumi-opennext-site": "workspace:*"
+    "@whiskey/api": "workspace:*",
+    "@whiskey/pulumi-opennext-site": "workspace:*",
+    "@whiskey/pulumi-utils": "workspace:*"
   }
 }

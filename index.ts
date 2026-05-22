@@ -1,8 +1,10 @@
 import * as aws from "@pulumi/aws";
 import * as pulumi from "@pulumi/pulumi";
 import { NextJsSite } from "@whiskey/pulumi-opennext-site";
+import { getStack } from "@whiskey/pulumi-utils/stacks";
 
 const stack = pulumi.getStack();
+const coreApi = getStack("api");
 
 const table = new aws.dynamodb.Table("a-list-entries-table", {
   name: `a-list-entries-${stack}`,
@@ -47,6 +49,10 @@ const site = new NextJsSite(siteName, {
     NEXT_PUBLIC_STACK: stack,
   },
   resourceNameBase,
+  cache: {
+    apiCachePolicyId: coreApi.getOutput("opennextApiCachePolicyId"),
+    serverCachePolicyId: coreApi.getOutput("opennextServerCachePolicyId"),
+  },
   customDomain: {
     mode: "create",
     domainName: domainName,
