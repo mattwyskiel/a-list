@@ -1,11 +1,14 @@
 import { MixList } from "@/components/mix-list";
+import type { MixDuration } from "@/lib/duration";
 
 type Mix = {
   id: number;
   title: string;
   description: string;
   audioUrl: string;
+  albumArtUrl?: string;
   publishDate: string;
+  duration?: MixDuration;
   slug: string;
   archive: boolean;
   draft: boolean;
@@ -25,8 +28,10 @@ async function getData(): Promise<Mix[]> {
   // You can return Date, Map, Set, etc.
 
   if (!res.ok) {
-    // This will activate the closest `error.js` Error Boundary
-    throw new Error("Failed to fetch data");
+    const errorText = await res.text();
+    throw new Error(
+      `Failed to fetch data (${res.status} ${res.statusText})${errorText ? `: ${errorText}` : ""}`,
+    );
   }
 
   const mixes: Mix[] = await res.json();

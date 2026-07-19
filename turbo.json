@@ -2,10 +2,18 @@
   "$schema": "https://v2-9-14.turborepo.dev/schema.json",
   "tasks": {
     "deploy": {
-      "dependsOn": ["@whiskey/api#deploy", "@a-list/webapp#build"]
+      "dependsOn": [
+        "@whiskey/api#deploy",
+        "@whiskey/bun-layer#deploy",
+        "@a-list/webapp#build"
+      ]
     },
     "deploy:dev": {
-      "dependsOn": ["@whiskey/api#deploy:dev", "@a-list/webapp#build"]
+      "dependsOn": [
+        "@whiskey/api#deploy:dev",
+        "@whiskey/bun-layer#deploy:dev",
+        "@a-list/webapp#build"
+      ]
     }
   },
   "extends": ["//"]

@@ -19,8 +19,8 @@ See a need, fill a need!
 ## Features
 
 - Public list of non-archived, non-draft mixes
-- Individual mix pages with audio playback
-- Podcast RSS feed for podcast apps
+- Individual mix pages with per-mix album art, audio playback, optional YouTube embeds, and clickable chapters
+- Podcast RSS feed for podcast apps, including per-item artwork and Simple Chapters when present
 - DynamoDB-backed mix metadata storage
 - Seed endpoint that imports mix metadata from the external asset bucket
 
@@ -41,7 +41,7 @@ This repository is published from a larger private monorepo. The app-specific so
 - `index.ts` - Pulumi program for the A-List site and DynamoDB table
 - `src/` - Next.js application source
 - `src/app/api/podcast-feed/route.ts` - podcast RSS route
-- `src/app/api/seed-db/route.ts` - imports metadata from `com.mattwyskiel.assets/a-list/`
+- `src/app/api/seed-db/route.ts` - imports metadata from `com.mattwyskiel.assets/a-list/` and matches album art files by basename
 - `src/app/mixes/[slug]/page.tsx` - individual mix page
 - `src/components/` - UI components for the mix list and player
 
@@ -79,6 +79,36 @@ Deployments are managed from the private infrastructure workspace with Pulumi an
 ## Data Model
 
 Mix metadata lives in DynamoDB and is keyed by numeric `id`. A global secondary index named `bySlug` supports lookups for `/mixes/[slug]`.
+
+Entries may include optional `albumArtUrl` for per-mix cover art, optional `youtubeUrl` for an associated YouTube video, and optional `chapters` generated from Logic Pro markers:
+
+```json
+{
+  "id": 1,
+  "title": "Uh Oh Mix Redux",
+  "description": "Uh Oh Mix Redux",
+  "audioUrl": "https://assets.mattwyskiel.com/a-list/uh-oh-mix-redux.mp3",
+  "albumArtUrl": "https://assets.mattwyskiel.com/a-list/uh-oh-mix-redux.jpg",
+  "youtubeUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+  "publishDate": "2026-07-06T00:00:00.000Z",
+  "duration": 4823,
+  "slug": "uh-oh-mix-redux",
+  "archive": false,
+  "draft": false,
+  "chapters": [
+    { "title": "01 Kim Petras - uh oh", "startTime": 0 },
+    { "title": "03 Rihanna - Where Have You Been", "startTime": 412.5 }
+  ]
+}
+```
+
+`albumArtUrl` should point at square cover art for the mix. If omitted, A-List falls back to the podcast cover image. `youtubeUrl` can be a YouTube watch, short, embed, youtu.be URL, or raw video ID; valid values render as a privacy-enhanced embed on the mix page. `duration` is optional and can be seconds or a preformatted display string; the homepage shows it on each mix list item. `startTime` is seconds from the beginning of the published audio file. The mix page renders chapters as jump links, and the RSS feed emits them as Podlove Simple Chapters.
+
+To generate the JSON, export markers from Logic Pro as a standard MIDI file and run:
+
+```bash
+bun --cwd apps/cli src/index.ts music logic-chapters path/to/exported.mid chapters.json
+```
 
 The deployed Lambda receives:
 

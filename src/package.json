@@ -23,20 +23,21 @@
     "clsx": "catalog:ui",
     "lucide-react": "catalog:ui",
     "next": "catalog:app",
+    "next-themes": "catalog:ui",
     "podcast": "catalog:app",
     "react": "catalog:app",
     "react-dom": "catalog:app",
     "react-h5-audio-player": "catalog:ui",
     "tailwind-merge": "catalog:ui",
-    "tailwindcss-animate": "catalog:ui"
+    "tw-animate-css": "catalog:ui"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "catalog:app",
     "@types/bun": "catalog:",
     "@types/react": "catalog:ui",
     "@types/react-dom": "catalog:ui",
-    "autoprefixer": "catalog:ui",
     "postcss": "catalog:ui",
-    "tailwindcss": "^3.4.18",
+    "tailwindcss": "catalog:app",
     "typescript": "catalog:"
   }
 }

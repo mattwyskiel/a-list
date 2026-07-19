@@ -1,28 +1,27 @@
-import { Button } from "@whiskey/web-ui/components/ui/button";
-import { CardHeader } from "@whiskey/web-ui/components/ui/card";
+import { ArrowLeft } from "lucide-react";
 import type { Metadata, ResolvingMetadata } from "next";
 import Link from "next/link";
-import type { SVGProps } from "react";
 import { Player } from "@/components/player";
+import { getAlbumArtUrl } from "@/lib/album-art";
 
 type Mix = {
   id: number;
   title: string;
   description: string;
   audioUrl: string;
+  albumArtUrl?: string;
+  youtubeUrl?: string;
   publishDate: string;
   slug: string;
+  chapters?: {
+    title: string;
+    startTime: number;
+  }[];
 };
 
-// Next.js will invalidate the cache when a
-// request comes in, at most once every 60 seconds.
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
-
-// We'll prerender only the params from `generateStaticParams` at build time.
-// If a request comes in for a path that hasn't been generated,
-// Next.js will server-render the page on-demand.
-export const dynamicParams = true; // or false, to 404 on unknown paths
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
   return [];
@@ -35,12 +34,11 @@ function getBaseUrl(): string {
 async function getData(slug: string): Promise<Mix> {
   const res = await fetch(`${getBaseUrl()}/api/entries?slug=${slug}`);
 
-  // The return value is *not* serialized
-  // You can return Date, Map, Set, etc.
-
   if (!res.ok) {
-    // This will activate the closest `error.js` Error Boundary
-    throw new Error("Failed to fetch data");
+    const errorText = await res.text();
+    throw new Error(
+      `Failed to fetch data (${res.status} ${res.statusText})${errorText ? `: ${errorText}` : ""}`,
+    );
   }
 
   return res.json();
@@ -52,6 +50,8 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await params;
   const mix = await getData(slug);
+
+  const albumArtUrl = getAlbumArtUrl(mix);
 
   return {
     title: `${mix.title} - The A-List Setlist`,
@@ -65,10 +65,8 @@ export async function generateMetadata(
       url: `https://a-list.mattwyskiel.com/mixes/${slug}`,
       images: [
         {
-          url: "https://assets.mattwyskiel.com/a-list/podcast-image.jpeg",
-          width: 1024,
-          height: 1024,
-          alt: "The A-List Setlist - podcast cover image",
+          url: albumArtUrl,
+          alt: `${mix.title} album art`,
         },
       ],
     },
@@ -82,44 +80,19 @@ export default async function Page({
 }) {
   const { slug } = await params;
   const mix = await getData(slug);
-  return (
-    <>
-      <CardHeader className="pb-0">
-        <div className="flex items-center gap-4">
-          <Button size="icon" variant="ghost">
-            <Link href="/">
-              <ChevronLeftIcon className="w-5 h-5" />
-            </Link>
-          </Button>
-          <div className="grid gap-1.5">
-            <h2 className="text-md font-bold leading-none">
-              The A-List Setlist
-            </h2>
-            {/* <p className="text-sm text-gray-500 dark:text-gray-400"></p> */}
-          </div>
-        </div>
-      </CardHeader>
-      <Player mix={mix} />
-    </>
-  );
-}
 
-function ChevronLeftIcon(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <title>Back</title>
-      <path d="m15 18-6-6 6-6" />
-    </svg>
+    <div className="container mx-auto max-w-4xl px-4 py-10 md:py-14">
+      <div className="mb-6">
+        <Link
+          href="/"
+          className="inline-flex w-fit items-center gap-2 font-medium text-muted-foreground text-sm hover:text-foreground"
+        >
+          <ArrowLeft className="size-4" />
+          Back to mixes
+        </Link>
+      </div>
+      <Player mix={mix} />
+    </div>
   );
 }

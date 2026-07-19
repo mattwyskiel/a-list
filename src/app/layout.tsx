@@ -1,7 +1,12 @@
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { PersonalSiteFooter } from "@whiskey/web-ui/components/site/personal-site-footer";
+import { PersonalSiteHeader } from "@whiskey/web-ui/components/site/personal-site-header";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
+import { ModeToggle } from "@/components/ModeToggle";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,7 +22,7 @@ export const metadata: Metadata = {
     siteName: "The A-List Setlist",
     images: [
       {
-        url: "https://assets.mattwyskiel.com/a-list/podcast-image.jpeg",
+        url: "https://assets.mattwyskiel.com/a-list/podcast-image-2.jpeg",
         width: 1024,
         height: 1024,
         alt: "The A-List Setlist - podcast cover image",
@@ -32,9 +37,31 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
-      <GoogleAnalytics gaId="G-T6FX4D86NV" />
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} min-h-screen antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+          scriptProps={{ type: "text/plain" }}
+        >
+          <div className="flex min-h-screen flex-col">
+            <PersonalSiteHeader
+              brandHref="https://mattwyskiel.com"
+              linkComponent={Link}
+              navItems={[
+                { href: "https://mattwyskiel.com/stories", label: "Stories" },
+                { href: "/", label: "Music" },
+              ]}
+              themeControl={<ModeToggle />}
+            />
+            <main className="flex-1">{children}</main>
+            <PersonalSiteFooter linkComponent={Link} />
+          </div>
+        </ThemeProvider>
+        <GoogleAnalytics gaId="G-T6FX4D86NV" />
+      </body>
     </html>
   );
 }
