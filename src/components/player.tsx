@@ -177,15 +177,8 @@ export function Player({ mix }: PlayerProps) {
           showJumpControls={false}
           src={mix.audioUrl}
         />
-        <section>
-          <h2 className="mb-2 font-medium">About this mix</h2>
-          <p className="max-w-3xl text-muted-foreground leading-relaxed">
-            {mix.description}
-          </p>
-        </section>
         {youtubeEmbedUrl ? (
           <section className="flex flex-col gap-3">
-            <h2 className="font-medium">Watch the video</h2>
             <div className="aspect-video overflow-hidden rounded-xl border bg-card shadow-sm">
               <iframe
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -199,6 +192,11 @@ export function Player({ mix }: PlayerProps) {
             </div>
           </section>
         ) : null}
+        <section>
+          <p className="max-w-3xl text-muted-foreground leading-relaxed">
+            {mix.description}
+          </p>
+        </section>
         <Separator />
         {chapters.length > 0 ? (
           <section className="flex flex-col gap-3">
