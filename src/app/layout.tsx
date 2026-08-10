@@ -2,6 +2,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import { PersonalSiteFooter } from "@whiskey/web-ui/components/site/personal-site-footer";
 import { PersonalSiteHeader } from "@whiskey/web-ui/components/site/personal-site-header";
 import type { Metadata } from "next";
+import { cacheLife } from "next/cache";
 import { Inter } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
@@ -31,11 +32,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+async function getCurrentYear() {
+  "use cache";
+  cacheLife("max");
+  return new Date().getFullYear();
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const currentYear = await getCurrentYear();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} min-h-screen antialiased`}>
@@ -57,7 +66,10 @@ export default function RootLayout({
               themeControl={<ModeToggle />}
             />
             <main className="flex-1">{children}</main>
-            <PersonalSiteFooter linkComponent={Link} />
+            <PersonalSiteFooter
+              currentYear={currentYear}
+              linkComponent={Link}
+            />
           </div>
         </ThemeProvider>
         <GoogleAnalytics gaId="G-T6FX4D86NV" />

@@ -1,4 +1,5 @@
 import { DatabaseService } from "@a-list/core";
+import { connection } from "next/server";
 import { Podcast } from "podcast";
 import { DEFAULT_ALBUM_ART_URL, getAlbumArtUrl } from "@/lib/album-art";
 
@@ -28,6 +29,7 @@ function getPodcastChapters(
 }
 
 export async function GET(_request: Request) {
+  await connection();
   const database = new DatabaseService();
   const entries = await database.retrieveAllEntries();
 
