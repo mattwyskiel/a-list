@@ -11,10 +11,11 @@ import {
 import { Separator } from "@whiskey/web-ui/components/ui/separator";
 import { cn } from "@whiskey/web-ui/lib/utils";
 import Image from "next/image";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import { getAlbumArtUrl } from "@/lib/album-art";
+import { getMediaSessionMetadata } from "@/lib/media-session";
 import { getYouTubeEmbedUrl } from "@/lib/youtube";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
@@ -91,6 +92,18 @@ function getActiveChapterIndex(
   return activeIndex;
 }
 
+function setMediaSessionActionHandler(
+  mediaSession: MediaSession,
+  action: MediaSessionAction,
+  handler: MediaSessionActionHandler | null,
+) {
+  try {
+    mediaSession.setActionHandler(action, handler);
+  } catch {
+    // Browsers can expose Media Session while omitting individual actions.
+  }
+}
+
 export function Player({ mix }: PlayerProps) {
   const playerRef = useRef<AudioPlayer>(null);
   const chapters = useMemo(
@@ -113,6 +126,103 @@ export function Player({ mix }: PlayerProps) {
     [mix.youtubeUrl],
   );
 
+  useEffect(() => {
+    if (
+      !("mediaSession" in navigator) ||
+      typeof MediaMetadata === "undefined"
+    ) {
+      return;
+    }
+
+    const mediaSession = navigator.mediaSession;
+    const metadata = new MediaMetadata(
+      getMediaSessionMetadata({
+        title: mix.title,
+        activeChapterTitle: chapters[activeChapterIndex]?.title,
+        albumArtUrl: mix.albumArtUrl,
+      }),
+    );
+    mediaSession.metadata = metadata;
+
+    return () => {
+      if (mediaSession.metadata === metadata) {
+        mediaSession.metadata = null;
+      }
+    };
+  }, [activeChapterIndex, chapters, mix.albumArtUrl, mix.title]);
+
+  useEffect(() => {
+    if (!("mediaSession" in navigator)) {
+      return;
+    }
+
+    const getAudio = () => playerRef.current?.audio.current;
+    const seekBy = (offset: number) => {
+      const audio = getAudio();
+      if (!audio) {
+        return;
+      }
+
+      const nextTime = Math.max(0, audio.currentTime + offset);
+      audio.currentTime = Number.isFinite(audio.duration)
+        ? Math.min(nextTime, audio.duration)
+        : nextTime;
+    };
+    const handlers: [MediaSessionAction, MediaSessionActionHandler][] = [
+      [
+        "play",
+        () => {
+          void getAudio()
+            ?.play()
+            .catch(() => undefined);
+        },
+      ],
+      [
+        "pause",
+        () => {
+          getAudio()?.pause();
+        },
+      ],
+      [
+        "seekbackward",
+        ({ seekOffset }) => {
+          seekBy(-(seekOffset ?? 10));
+        },
+      ],
+      [
+        "seekforward",
+        ({ seekOffset }) => {
+          seekBy(seekOffset ?? 10);
+        },
+      ],
+      [
+        "seekto",
+        ({ fastSeek, seekTime }) => {
+          const audio = getAudio();
+          if (!audio || seekTime === undefined) {
+            return;
+          }
+
+          if (fastSeek && typeof audio.fastSeek === "function") {
+            audio.fastSeek(seekTime);
+          } else {
+            audio.currentTime = seekTime;
+          }
+        },
+      ],
+    ];
+
+    for (const [action, handler] of handlers) {
+      setMediaSessionActionHandler(navigator.mediaSession, action, handler);
+    }
+
+    return () => {
+      for (const [action] of handlers) {
+        setMediaSessionActionHandler(navigator.mediaSession, action, null);
+      }
+    };
+  }, []);
+
   const seekToChapter = useCallback(
     (startTime: number) => {
       const audio = playerRef.current?.audio.current;
@@ -127,7 +237,7 @@ export function Player({ mix }: PlayerProps) {
     [chapters],
   );
 
-  const handleListen = useCallback(
+  const handlePlaybackPositionChange = useCallback(
     (event: Event) => {
       setActiveChapterIndex(
         getActiveChapterIndex(
@@ -172,7 +282,8 @@ export function Player({ mix }: PlayerProps) {
           customAdditionalControls={[]}
           customVolumeControls={[]}
           listenInterval={1000}
-          onListen={handleListen}
+          onListen={handlePlaybackPositionChange}
+          onSeeked={handlePlaybackPositionChange}
           ref={playerRef}
           showJumpControls={false}
           src={mix.audioUrl}

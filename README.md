@@ -20,6 +20,7 @@ See a need, fill a need!
 
 - Public list of non-archived, non-draft mixes
 - Individual mix pages with per-mix album art, audio playback, optional YouTube embeds, and clickable chapters
+- Lock-screen, notification, and desktop media controls with mix artwork and current track titles
 - Podcast RSS feed for podcast apps, including per-item artwork and Simple Chapters when present
 - DynamoDB-backed mix metadata storage
 - Seed endpoint that imports mix metadata from the external asset bucket
@@ -102,7 +103,9 @@ Entries may include optional `albumArtUrl` for per-mix cover art, optional `yout
 }
 ```
 
-`albumArtUrl` should point at square cover art for the mix. If omitted, A-List falls back to the podcast cover image. `youtubeUrl` can be a YouTube watch, short, embed, youtu.be URL, or raw video ID; valid values render as a privacy-enhanced embed on the mix page. `duration` is optional and can be seconds or a preformatted display string; the homepage shows it on each mix list item. `startTime` is seconds from the beginning of the published audio file. The mix page renders chapters as jump links, and the RSS feed emits them as Podlove Simple Chapters.
+`albumArtUrl` should point at square cover art for the mix. If omitted, A-List falls back to the podcast cover image. The browser Media Session API sends that artwork and the mix title to supported mobile lock screens, notification controls, and desktop browser media surfaces. During a chapter, its title becomes the now-playing title and the mix title becomes the album. Unsupported browsers continue to use the normal in-page audio player.
+
+`youtubeUrl` can be a YouTube watch, short, embed, youtu.be URL, or raw video ID; valid values render as a privacy-enhanced embed on the mix page. `duration` is optional and can be seconds or a preformatted display string; the homepage shows it on each mix list item. `startTime` is seconds from the beginning of the published audio file. The mix page renders chapters as jump links, and the RSS feed emits them as Podlove Simple Chapters.
 
 To generate the JSON, export markers from Logic Pro as a standard MIDI file and run:
 
