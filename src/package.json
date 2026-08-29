@@ -5,7 +5,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch",
-    "build": "SHARP_VERSION=0.35.3 bunx open-next build",
+    "build": "SHARP_VERSION=0.35.4 bunx open-next build",
     "build:next": "next build",
     "dev": "TABLE_NAME=${TABLE_NAME:-a-list-entries-dev} A_LIST_URL=${A_LIST_URL:-http://a-list.localhost:3003} NEXT_PUBLIC_STACK=${NEXT_PUBLIC_STACK:-dev} next dev -H a-list.localhost -p 3003",
     "start": "next start"
