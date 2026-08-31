@@ -1,4 +1,5 @@
 import { type AlbumArtSource, getAlbumArtUrl } from "./album-art";
+import { formatTrackTitle, parseTrackMetadata } from "./track-metadata";
 
 const A_LIST_ARTIST = "A-List";
 const A_LIST_ALBUM = "The A-List Setlist";
@@ -12,10 +13,15 @@ export function getMediaSessionMetadata(
   source: MediaSessionMetadataSource,
 ): MediaMetadataInit {
   const activeChapterTitle = source.activeChapterTitle?.trim();
+  const activeTrack = activeChapterTitle
+    ? parseTrackMetadata(activeChapterTitle)
+    : null;
 
   return {
-    title: activeChapterTitle || source.title,
-    artist: A_LIST_ARTIST,
+    title: activeTrack
+      ? formatTrackTitle(activeTrack)
+      : activeChapterTitle || source.title,
+    artist: activeTrack?.artist ?? A_LIST_ARTIST,
     album: activeChapterTitle ? source.title : A_LIST_ALBUM,
     artwork: [{ src: getAlbumArtUrl(source) }],
   };

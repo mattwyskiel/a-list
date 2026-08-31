@@ -16,6 +16,7 @@ import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import { getAlbumArtUrl } from "@/lib/album-art";
 import { getMediaSessionMetadata } from "@/lib/media-session";
+import { parseTrackMetadata } from "@/lib/track-metadata";
 import { getYouTubeEmbedUrl } from "@/lib/youtube";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
@@ -56,21 +57,33 @@ function formatChapterTime(seconds: number): string {
 }
 
 function ChapterTitle({ title }: { title: string }) {
-  const mixedTagMatch =
-    /\[(Mixed(?: Interlude)?)\]|\((Mixed(?: Interlude)?)\)/.exec(title);
-  if (!mixedTagMatch) {
+  const track = parseTrackMetadata(title);
+  if (!track) {
     return title;
   }
 
-  const mixedTag = mixedTagMatch[0];
-  const beforeTag = title.slice(0, mixedTagMatch.index);
-  const afterTag = title.slice(mixedTagMatch.index + mixedTag.length);
-
   return (
     <>
-      {beforeTag}
-      <span className="text-muted-foreground/65">{mixedTag}</span>
-      {afterTag}
+      {track.trackNumber ? (
+        <span className="mr-2 font-mono text-muted-foreground/65 text-xs tabular-nums">
+          {String(track.trackNumber).padStart(2, "0")}
+        </span>
+      ) : null}
+      <span className="font-semibold">{track.artist}</span>
+      <span className="text-muted-foreground/65"> — </span>
+      <span className="font-medium">{track.title}</span>
+      {track.modification ? (
+        <span className="text-muted-foreground/80">
+          {" "}
+          ({track.modification})
+        </span>
+      ) : null}
+      {track.annotations.map((annotation) => (
+        <span className="text-muted-foreground/65" key={annotation}>
+          {" "}
+          [{annotation}]
+        </span>
+      ))}
     </>
   );
 }
