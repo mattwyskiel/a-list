@@ -2,19 +2,11 @@
 
 ![A-List](https://assets.mattwyskiel.com/a-list/podcast-image.jpeg)
 
-A home website for my DJ-style mixes.
+A website for DJ mixes, audio playback, and a podcast feed.
 
 - Production: <https://a-list.mattwyskiel.com>
 - Dev: <https://dev.a-list.mattwyskiel.com>
 - Podcast feed: <https://a-list.mattwyskiel.com/api/podcast-feed>
-
-## Background
-
-I grew up with a love for music. My parents raised me on James Taylor, John Mayer, Donald Fagen, and Van Halen. For many years, at least since college, I've been building my skills on the side as a DJ and mixer, most prominently putting them to use as host of my college radio show King Matt's A-List.
-
-Post-college, I started creating mixes again, and I began hosting them on my asset server and sending links to my friends. As I did it more and more, I realized they would want an easier experience listening, and that I too would want an easier way to access my mixes when I want to listen to them.
-
-See a need, fill a need!
 
 ## Features
 
@@ -48,7 +40,7 @@ This repository is published from a larger private monorepo. The app-specific so
 
 ## Local Development
 
-This public repository is primarily a source mirror. Running the app exactly as deployed requires private workspace packages, AWS resources, and secrets from the private infrastructure repo.
+This public repository is primarily a source mirror. Running the deployed app configuration requires private workspace packages, AWS resources, and secrets from the private infrastructure repo.
 
 If you have the full private workspace, run the app from this directory with:
 
@@ -64,11 +56,12 @@ The local dev script serves the app at <http://a-list.localhost:3003> and defaul
 
 ## Build and Typecheck
 
-Within the full private workspace:
+Within the full private workspace, set `STACK=prod` and `NEXT_PUBLIC_STACK=prod` for a production build:
 
 ```bash
 bun run typecheck
-bun run --cwd src build
+STACK=prod NEXT_PUBLIC_STACK=prod \
+  infisical run --env=prod -- bun run --cwd src build
 ```
 
 The production build uses OpenNext and produces `.open-next/` artifacts consumed by Pulumi deploys.
