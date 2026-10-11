@@ -7,7 +7,7 @@
       "env": ["$TURBO_EXTENDS$"]
     },
     "typecheck": {
-      "outputs": ["tsconfig.tsbuildinfo", ".next/cache/.tsbuildinfo"]
+      "outputs": []
     }
   }
 }
