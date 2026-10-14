@@ -1,5 +1,7 @@
 "use client";
 
+import type { EntryChapter } from "@a-list/core";
+import { Badge } from "@whiskey/web-ui/components/ui/badge";
 import { Button } from "@whiskey/web-ui/components/ui/button";
 import {
   Card,
@@ -25,10 +27,7 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
 });
 
-type Chapter = {
-  title: string;
-  startTime: number;
-};
+type Chapter = EntryChapter;
 
 export type PlayerProps = {
   mix: {
@@ -347,8 +346,21 @@ export function Player({ mix }: PlayerProps) {
                         <span className="font-mono text-muted-foreground text-xs leading-6 tabular-nums">
                           {formatChapterTime(chapter.startTime)}
                         </span>
-                        <span className="leading-6">
+                        <span className="min-w-0 break-words leading-6">
                           <ChapterTitle title={chapter.title} />
+                          {chapter.explicit === true ? (
+                            <>
+                              <Badge
+                                aria-hidden="true"
+                                className="ml-2 size-4 rounded-sm p-0 align-middle"
+                                title="Explicit"
+                                variant="secondary"
+                              >
+                                E
+                              </Badge>
+                              <span className="sr-only"> Explicit</span>
+                            </>
+                          ) : null}
                         </span>
                       </span>
                     </Button>

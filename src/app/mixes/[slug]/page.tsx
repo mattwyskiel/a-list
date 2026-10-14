@@ -1,3 +1,4 @@
+import type { EntryChapter } from "@a-list/core";
 import {
   Card,
   CardContent,
@@ -21,10 +22,7 @@ type Mix = {
   youtubeUrl?: string;
   publishDate: string;
   slug: string;
-  chapters?: {
-    title: string;
-    startTime: number;
-  }[];
+  chapters?: EntryChapter[];
 };
 
 function getBaseUrl(): string {

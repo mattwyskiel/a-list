@@ -1,4 +1,4 @@
-import { DatabaseService } from "@a-list/core";
+import { DatabaseService, EntrySchema } from "@a-list/core";
 
 function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : "Unknown error";
@@ -39,9 +39,17 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const body: unknown = await request.json().catch(() => undefined);
+    const parsed = EntrySchema.safeParse(body);
+    if (!parsed.success) {
+      return Response.json(
+        { error: "Invalid entry", details: parsed.error.issues },
+        { status: 400 },
+      );
+    }
+
     const database = new DatabaseService();
-    await database.addEntry(body);
+    await database.addEntry(parsed.data);
     return Response.json({ message: "Success!" });
   } catch (error) {
     return databaseErrorResponse(error);

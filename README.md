@@ -11,7 +11,7 @@ A website for DJ mixes, audio playback, and a podcast feed.
 ## Features
 
 - Public list of non-archived, non-draft mixes
-- Individual mix pages with per-mix album art, audio playback, optional YouTube embeds, and clickable chapters
+- Individual mix pages with per-mix album art, audio playback, optional YouTube embeds, and clickable chapters with explicit track labels
 - Lock-screen, notification, and desktop media controls with mix artwork and current track titles
 - Podcast RSS feed for podcast apps, including per-item artwork and Simple Chapters when present
 - DynamoDB-backed mix metadata storage
@@ -90,7 +90,7 @@ Entries may include optional `albumArtUrl` for per-mix cover art, optional `yout
   "archive": false,
   "draft": false,
   "chapters": [
-    { "title": "01 Kim Petras - uh oh", "startTime": 0 },
+    { "title": "01 Kim Petras - uh oh", "startTime": 0, "explicit": true },
     { "title": "03 Rihanna - Where Have You Been", "startTime": 412.5 }
   ]
 }
@@ -99,6 +99,8 @@ Entries may include optional `albumArtUrl` for per-mix cover art, optional `yout
 `albumArtUrl` should point at square cover art for the mix. If omitted, A-List falls back to the podcast cover image. The browser Media Session API sends that artwork and the mix title to supported mobile lock screens, notification controls, and desktop browser media surfaces. During a chapter, the mix title becomes the album. Structured chapter names use `{artist} - {title} ({modification}) [{annotation}]`, with an optional zero-padded or punctuated leading track number. A-List emphasizes those fields separately in the track list and sends the parsed artist and title (including modification and annotations) to Media Session. Unstructured chapter names remain supported and are sent unchanged with `A-List` as their artist. Unsupported browsers continue to use the normal in-page audio player.
 
 `youtubeUrl` can be a YouTube watch, short, embed, youtu.be URL, or raw video ID; valid values render as a privacy-enhanced embed on the mix page. `duration` is optional and can be seconds or a preformatted display string; the homepage shows it on each mix list item. `startTime` is seconds from the beginning of the published audio file. The mix page renders chapters as jump links, and the RSS feed emits them as Podlove Simple Chapters.
+
+Set `explicit: true` on a chapter to show a compact “E” badge beside its track title. The badge has an “Explicit” text label for screen readers. Omit `explicit` or set it to `false` to show no badge. Existing entries need no migration. Set the flag in the chapter JSON after marker export, then save the array on the entry through `/api/entries` or the database. `POST /api/entries` validates entries before storage and returns HTTP 400 for malformed JSON or invalid field types. `explicit` must be a JSON boolean, not a string. Track titles and podcast chapter titles stay unchanged; the podcast feed keeps its existing explicit rating.
 
 To generate the JSON, export markers from Logic Pro as a standard MIDI file and run:
 
