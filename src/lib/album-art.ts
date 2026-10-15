@@ -10,7 +10,5 @@ export type AlbumArtSource = {
 export function getAlbumArtUrl(source: AlbumArtSource): string {
   const albumArtUrl = source.albumArtUrl?.trim();
 
-  return albumArtUrl && albumArtUrl.length > 0
-    ? albumArtUrl
-    : DEFAULT_ALBUM_ART_URL;
+  return albumArtUrl || DEFAULT_ALBUM_ART_URL;
 }

@@ -1,9 +1,5 @@
 import { DatabaseService, EntrySchema } from "@a-list/core";
 
-function getErrorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : "Unknown error";
-}
-
 function databaseErrorResponse(error: unknown): Response {
   console.error("A-List entries API failed", error);
 
@@ -11,7 +7,7 @@ function databaseErrorResponse(error: unknown): Response {
     {
       error: "Failed to access A-List entries",
       ...(process.env.NODE_ENV === "development"
-        ? { details: getErrorMessage(error) }
+        ? { details: error instanceof Error ? error.message : "Unknown error" }
         : {}),
     },
     { status: 500 },
@@ -22,8 +18,7 @@ export async function GET(request: Request) {
   try {
     const database = new DatabaseService();
 
-    const reqUrl = new URL(request.url);
-    const queryParams = new URLSearchParams(reqUrl.search);
+    const queryParams = new URL(request.url).searchParams;
 
     if (queryParams.has("slug")) {
       return Response.json(

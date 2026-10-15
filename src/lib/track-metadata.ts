@@ -53,19 +53,15 @@ export function parseTrackMetadata(value: string): TrackMetadata | null {
 
   const annotations: string[] = [];
   let modification: string | undefined;
-  let foundQualifier = true;
 
   // Accept both the preferred `(modification) [annotation]` order and older
   // chapter labels where a bracketed annotation precedes the modification.
-  while (foundQualifier) {
-    foundQualifier = false;
-
+  for (;;) {
     const annotationMatch = TRAILING_ANNOTATION_PATTERN.exec(title);
     const annotation = annotationMatch?.[2]?.trim();
     if (annotationMatch && annotation) {
       title = annotationMatch[1]?.trim() ?? "";
       annotations.unshift(annotation);
-      foundQualifier = true;
       continue;
     }
 
@@ -76,8 +72,10 @@ export function parseTrackMetadata(value: string): TrackMetadata | null {
     if (modificationMatch && matchedModification) {
       title = modificationMatch[1]?.trim() ?? "";
       modification = matchedModification;
-      foundQualifier = true;
+      continue;
     }
+
+    break;
   }
 
   if (!title) {
