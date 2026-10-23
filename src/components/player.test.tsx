@@ -16,6 +16,21 @@ function renderChapter(
   return renderToStaticMarkup(<Player mix={{ ...mix, chapters: [chapter] }} />);
 }
 
+describe("chapter links", () => {
+  it("renders native links that can be copied or opened in a new tab", () => {
+    const html = renderChapter({ title: "Track two", startTime: 412.5 });
+    expect(html).toMatch(/<a[^>]*href="#t=412\.5"/);
+    expect(html).not.toContain('role="button"');
+    expect(html).toContain("Track two");
+  });
+
+  it("links the first chapter to zero", () => {
+    expect(renderChapter({ title: "Intro", startTime: 0 })).toContain(
+      'href="#t=0"',
+    );
+  });
+});
+
 describe("explicit chapter labels", () => {
   it("labels explicit structured tracks without changing their title", () => {
     const html = renderChapter({

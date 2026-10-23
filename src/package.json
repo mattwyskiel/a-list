@@ -29,7 +29,8 @@
     "react-dom": "catalog:app",
     "react-h5-audio-player": "catalog:ui",
     "tailwind-merge": "catalog:ui",
-    "tw-animate-css": "catalog:ui"
+    "tw-animate-css": "catalog:ui",
+    "zod": "catalog:app"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "catalog:app",

@@ -2,7 +2,7 @@
 
 import type { EntryChapter } from "@a-list/core";
 import { Badge } from "@whiskey/web-ui/components/ui/badge";
-import { Button } from "@whiskey/web-ui/components/ui/button";
+import { buttonVariants } from "@whiskey/web-ui/components/ui/button";
 import {
   Card,
   CardContent,
@@ -17,6 +17,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import { getAlbumArtUrl } from "@/lib/album-art";
+import { getChapterHash, parseChapterHash } from "@/lib/chapter-links";
+import { seekChapterAudio } from "@/lib/chapter-playback";
 import { getMediaSessionMetadata } from "@/lib/media-session";
 import { parseTrackMetadata } from "@/lib/track-metadata";
 import { getYouTubeEmbedUrl } from "@/lib/youtube";
@@ -236,18 +238,36 @@ export function Player({ mix }: PlayerProps) {
   }, []);
 
   const seekToChapter = useCallback(
-    (startTime: number) => {
+    (startTime: number, play = false) => {
       const audio = playerRef.current?.audio.current;
       if (!audio) {
         return;
       }
 
-      audio.currentTime = Math.max(0, startTime);
-      setActiveChapterIndex(getActiveChapterIndex(chapters, startTime));
-      void audio.play().catch(() => undefined);
+      // loadedmetadata will retry the current URL if media is not ready yet.
+      const nextTime = seekChapterAudio(audio, startTime, play);
+      if (nextTime !== null) {
+        setActiveChapterIndex(getActiveChapterIndex(chapters, nextTime));
+      }
     },
     [chapters],
   );
+
+  const seekToLinkedChapter = useCallback(() => {
+    const hash = window.location.hash;
+    const startTime = hash === "" ? 0 : parseChapterHash(hash);
+    if (startTime !== null) {
+      seekToChapter(startTime);
+    }
+  }, [seekToChapter]);
+
+  useEffect(() => {
+    seekToLinkedChapter();
+    window.addEventListener("hashchange", seekToLinkedChapter);
+    return () => {
+      window.removeEventListener("hashchange", seekToLinkedChapter);
+    };
+  }, [seekToLinkedChapter]);
 
   const handlePlaybackPositionChange = useCallback(
     (event: Event) => {
@@ -295,6 +315,7 @@ export function Player({ mix }: PlayerProps) {
           customVolumeControls={[]}
           listenInterval={1000}
           onListen={handlePlaybackPositionChange}
+          onLoadedMetaData={seekToLinkedChapter}
           onSeeked={handlePlaybackPositionChange}
           ref={playerRef}
           showJumpControls={false}
@@ -332,15 +353,32 @@ export function Player({ mix }: PlayerProps) {
 
                 return (
                   <li key={`${chapter.startTime}-${chapter.title}`}>
-                    <Button
+                    <a
                       aria-current={isActive ? "true" : undefined}
                       className={cn(
+                        buttonVariants({ variant: "ghost" }),
                         "h-auto w-full justify-start whitespace-normal px-3 py-2 text-left",
                         isActive && "bg-brand/10 text-brand hover:bg-brand/15",
                       )}
-                      onClick={() => seekToChapter(chapter.startTime)}
-                      type="button"
-                      variant="ghost"
+                      href={getChapterHash(chapter.startTime)}
+                      onClick={(event) => {
+                        if (
+                          event.button !== 0 ||
+                          event.metaKey ||
+                          event.ctrlKey ||
+                          event.shiftKey ||
+                          event.altKey
+                        ) {
+                          return;
+                        }
+
+                        event.preventDefault();
+                        const hash = getChapterHash(chapter.startTime);
+                        if (window.location.hash !== hash) {
+                          window.history.pushState(null, "", hash);
+                        }
+                        seekToChapter(chapter.startTime, true);
+                      }}
                     >
                       <span className="grid w-full grid-cols-[4.5rem_1fr] items-start gap-3">
                         <span className="font-mono text-muted-foreground text-xs leading-6 tabular-nums">
@@ -363,7 +401,7 @@ export function Player({ mix }: PlayerProps) {
                           ) : null}
                         </span>
                       </span>
-                    </Button>
+                    </a>
                   </li>
                 );
               })}
