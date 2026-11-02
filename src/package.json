@@ -8,7 +8,8 @@
     "build": "SHARP_VERSION=0.35.5 bunx open-next build",
     "build:next": "next typegen && bun check && next build && bun check",
     "dev": "TABLE_NAME=${TABLE_NAME:-a-list-entries-dev} A_LIST_URL=${A_LIST_URL:-http://a-list.localhost:3003} NEXT_PUBLIC_STACK=${NEXT_PUBLIC_STACK:-dev} next dev -H a-list.localhost -p 3003",
-    "start": "next start"
+    "start": "next start",
+    "test": "bun test"
   },
   "dependencies": {
     "@a-list/core": "workspace:*",
